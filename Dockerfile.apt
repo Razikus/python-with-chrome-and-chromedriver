@@ -1,0 +1,15 @@
+ARG version="3.7.4"
+FROM python:$version-buster
+ARG chromedriverversion="77.0.3865.40"
+ARG chromedebversion="77.0.3865.75-1"
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+RUN apt-get update && apt-get install -y google-chrome-stable=${chromedebversion}
+ADD https://chromedriver.storage.googleapis.com/${chromedriverversion}/chromedriver_linux64.zip /chrome/driver.zip
+RUN cd /chrome && unzip /chrome/driver.zip &&\
+    mv chromedriver /usr/bin &&\
+    chmod +x /usr/bin/chromedriver &&\
+    cd / &&\
+    rm -rf /chrome
+
+
